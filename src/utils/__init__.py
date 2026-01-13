@@ -3,7 +3,7 @@ Utility functions for the AI Agent Application.
 """
 import logging
 from typing import Dict, Any, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 
@@ -70,7 +70,7 @@ def format_timestamp(dt: Optional[datetime] = None) -> str:
         ISO formatted timestamp string
     """
     if dt is None:
-        dt = datetime.utcnow()
+        dt = datetime.now(timezone.utc)
     return dt.isoformat()
 
 
