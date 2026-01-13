@@ -3,7 +3,7 @@ Sample Agent implementation demonstrating agent pattern.
 """
 from typing import Dict, Any, Optional
 import asyncio
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 
 from src.agents.base_agent import BaseAgent
@@ -39,7 +39,7 @@ class SampleAgent(BaseAgent):
         Returns:
             Dictionary containing execution results
         """
-        start_time = datetime.utcnow()
+        start_time = datetime.now(timezone.utc)
         logger.info(f"Executing task: {task}")
         
         try:
@@ -54,7 +54,7 @@ class SampleAgent(BaseAgent):
                 "agent": self.name,
                 "model": self.model,
                 "context_provided": context is not None,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
             
             # Add context information if provided
@@ -62,19 +62,19 @@ class SampleAgent(BaseAgent):
                 result["context_keys"] = list(context.keys())
             
             # Log execution
-            duration = (datetime.utcnow() - start_time).total_seconds()
+            duration = (datetime.now(timezone.utc) - start_time).total_seconds()
             self.log_execution(task, result, duration)
             
             return result
             
         except Exception as e:
             logger.error(f"Error executing task: {str(e)}")
-            duration = (datetime.utcnow() - start_time).total_seconds()
+            duration = (datetime.now(timezone.utc) - start_time).total_seconds()
             error_result = {
                 "status": "error",
                 "task": task,
                 "error": str(e),
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.now(timezone.utc).isoformat()
             }
             self.log_execution(task, error_result, duration)
             return error_result

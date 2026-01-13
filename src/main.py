@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 from src.config import settings
 from src.agents.base_agent import BaseAgent
@@ -56,7 +56,7 @@ async def root():
     return {
         "message": "AI Agent Application is running",
         "version": "1.0.0",
-        "timestamp": datetime.utcnow().isoformat()
+        "timestamp": datetime.now(timezone.utc).isoformat()
     }
 
 
@@ -65,7 +65,7 @@ async def health_check():
     """Health check endpoint for Docker and monitoring."""
     return {
         "status": "healthy",
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "environment": settings.APP_ENV
     }
 

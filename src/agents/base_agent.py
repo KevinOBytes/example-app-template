@@ -4,7 +4,7 @@ Base Agent class for AI agent implementations.
 from abc import ABC, abstractmethod
 from typing import Dict, Any, List, Optional
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +66,7 @@ class BaseAgent(ABC):
             duration: Execution duration in seconds
         """
         execution_record = {
-            "timestamp": datetime.utcnow().isoformat(),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "agent": self.name,
             "task": task,
             "result": result,
