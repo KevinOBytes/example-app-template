@@ -294,7 +294,7 @@ docker-compose logs -f windmill
 
 ```python
 import requests
-from datetime import datetime
+from datetime import datetime, timezone
 
 def main():
     """
@@ -319,7 +319,7 @@ def main():
     send_report(report)
     
     return {
-        "timestamp": datetime.utcnow().isoformat(),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "status": "completed"
     }
 ```

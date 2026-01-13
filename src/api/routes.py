@@ -30,6 +30,11 @@ async def execute_agent_task(request: AgentTaskRequest):
     """
     Execute an agent task.
     
+    **Note**: Each request creates a new agent instance. Execution history is
+    tracked per-instance and will not persist across different API calls. For
+    persistent history, consider implementing a shared state mechanism or
+    storing history in a database.
+    
     Args:
         request: Agent task request with task description and optional context
         
@@ -59,6 +64,11 @@ async def execute_agent_task(request: AgentTaskRequest):
 async def get_agent_history():
     """
     Get agent execution history.
+    
+    **Note**: This endpoint creates a new agent instance, so it will only return
+    execution history from the current request context. For persistent history
+    across requests, consider implementing a shared state mechanism (singleton,
+    dependency injection, or storing history in database/Redis).
     
     Returns:
         List of agent execution records
