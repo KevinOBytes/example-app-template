@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+  # Main Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ai-agent-app
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=${APP_ENV:-development}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./logs:/app/logs
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ai-agent-network
+    restart: unless-stopped
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: ai-agent-postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER:-aiagent}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-aiagent_password}
+      - POSTGRES_DB=${POSTGRES_DB:-aiagent_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ai-agent-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aiagent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: ai-agent-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ai-agent-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Windmill Server
+  windmill:
+    image: ghcr.io/windmill-labs/windmill:main
+    container_name: ai-agent-windmill
+    ports:
+      - "8080:8000"
+    environment:
+      - DATABASE_URL=postgres://windmill:windmill@windmill-db:5432/windmill?sslmode=disable
+      - BASE_URL=http://localhost:8080
+    depends_on:
+      - windmill-db
+    networks:
+      - ai-agent-network
+    restart: unless-stopped
+
+  # Windmill Database
+  windmill-db:
+    image: postgres:16-alpine
+    container_name: ai-agent-windmill-db
+    environment:
+      - POSTGRES_USER=${WINDMILL_DB_USER:-windmill}
+      - POSTGRES_PASSWORD=${WINDMILL_DB_PASSWORD:-windmill}
+      - POSTGRES_DB=${WINDMILL_DB_NAME:-windmill}
+    volumes:
+      - windmill_db_data:/var/lib/postgresql/data
+    networks:
+      - ai-agent-network
+    restart: unless-stopped
+
+networks:
+  ai-agent-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  windmill_db_data:
