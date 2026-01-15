@@ -83,9 +83,9 @@ services:
     image: postgres:16-alpine
     container_name: ai-agent-windmill-db
     environment:
-      - POSTGRES_USER=windmill
-      - POSTGRES_PASSWORD=windmill
-      - POSTGRES_DB=windmill
+      - POSTGRES_USER=${WINDMILL_DB_USER:-windmill}
+      - POSTGRES_PASSWORD=${WINDMILL_DB_PASSWORD:-windmill}
+      - POSTGRES_DB=${WINDMILL_DB_NAME:-windmill}
     volumes:
       - windmill_db_data:/var/lib/postgresql/data
     networks:

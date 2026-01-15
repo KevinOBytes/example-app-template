@@ -14,17 +14,22 @@ This template uses the latest stable versions of all dependencies with security 
 ## Security Patches Applied
 
 ### aiohttp 3.13.3 (Updated from 3.9.1)
+
+**Multiple vulnerabilities fixed by upgrading from 3.9.1 to 3.13.3:**
+
 - **CVE**: Zip bomb vulnerability in HTTP Parser auto_decompress feature
   - Affected: <= 3.13.2
   - Fixed in: 3.13.3
   
 - **CVE**: Denial of Service when parsing malformed POST requests
   - Affected: < 3.9.4
-  - Fixed in: 3.9.4
+  - Fixed in: 3.9.4 (included in 3.13.3)
   
 - **CVE**: Directory traversal vulnerability
   - Affected: >= 1.0.5, < 3.9.2
-  - Fixed in: 3.9.2
+  - Fixed in: 3.9.2 (included in 3.13.3)
+
+**Note**: Upgrading from 3.9.1 to 3.13.3 addresses all three vulnerabilities above.
 
 ### FastAPI 0.109.1 (Updated from 0.109.0)
 - **CVE**: Content-Type Header ReDoS (Regular Expression Denial of Service)

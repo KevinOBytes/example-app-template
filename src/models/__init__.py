@@ -3,7 +3,7 @@ Data models for the AI Agent Application.
 """
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any, List
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 
 
@@ -21,7 +21,7 @@ class Task(BaseModel):
     description: str
     context: Optional[Dict[str, Any]] = None
     status: AgentStatus = AgentStatus.IDLE
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     completed_at: Optional[datetime] = None
     result: Optional[Dict[str, Any]] = None
 
