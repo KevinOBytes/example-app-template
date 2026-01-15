@@ -8,7 +8,6 @@ import logging
 from datetime import datetime, timezone
 
 from src.config import settings
-from src.agents.base_agent import BaseAgent
 from src.api import routes
 
 # Configure logging
